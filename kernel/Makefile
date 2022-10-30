@@ -8,8 +8,9 @@ OBJDUMP = riscv64-unknown-elf-objdump
 
 all: os.elf
 
-os.elf: boot.s switch.s os.cpp string.cpp
+os.elf: boot.s switch.s os.cpp string.cpp sys.s timer.cpp libc.cpp proc.cpp
 	$(CC) $(CFLAGS) -T linker.ld -o os.elf $^
+	riscv64-unknown-elf-objdump -d os.elf > os.asm
 
 qemu: $(TARGET)
 	@qemu-system-riscv64 -M ? | grep virt >/dev/null || exit

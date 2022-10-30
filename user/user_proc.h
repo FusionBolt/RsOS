@@ -1,14 +1,21 @@
 #pragma once
 #include "../kernel/libc.h"
 #include "../kernel/proc.h"
-int user_proc0()
+void user_first_proc()
 {
-    lib_puts("proc0");
-    run_proc(&proc_list[0]);
+    lib_puts("user first proc\n");
 }
 
-int user_proc1()
+void user_last_proc()
 {
-    lib_puts("proc1");
-    run_proc(&proc_list[0]);
+    lib_puts("user last proc\n");
+}
+
+void user_while_proc()
+{
+    lib_puts("user while_proc\n");
+    while(1) {
+        lib_puts("in while\n");
+    }
+    lib_puts("end\n");
 }
