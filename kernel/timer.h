@@ -8,5 +8,5 @@
 void timer_init();
 
 extern "C" {
-    reg_t timer_handler(reg_t epc, reg_t cause);
+    void timer_handler();
 }

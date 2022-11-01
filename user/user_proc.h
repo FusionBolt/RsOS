@@ -15,6 +15,7 @@ void user_while_proc()
 {
     lib_puts("user while_proc\n");
     while(1) {
+        delay(1000);
         lib_puts("in while\n");
     }
     lib_puts("end\n");
