@@ -2,6 +2,7 @@
 #include "proc.h"
 #include "../user/user_proc.h"
 #include "timer.h"
+#include "mm.h"
 
 extern "C" {
     void trap_init();
@@ -9,6 +10,7 @@ extern "C" {
     int os_main()
     {
         lib_puts("os start\n");
+        kinit();
         timer_init();
         trap_init();
         init_first_proc();
