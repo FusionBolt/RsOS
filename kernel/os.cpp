@@ -10,7 +10,11 @@ extern "C" {
     int os_main()
     {
         lib_puts("os start\n");
+        lib_puts("kinit\n");
         kinit();
+        lib_puts("vminit\n");
+        vminit();
+        lib_puts("timer init\n");
         timer_init();
         trap_init();
         init_first_proc();
