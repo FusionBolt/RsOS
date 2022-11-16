@@ -1,4 +1,5 @@
 #include "libc.h"
+#include "riscv.h"
 static char out_buf[1000]; // buffer for lib_vprintf()
 
 int lib_vsnprintf(char * out, size_t n, const char* s, va_list vl)
@@ -126,4 +127,57 @@ int lib_printf(const char* s, ...)
     res = lib_vprintf(s, vl);
     va_end(vl);
     return res;
+}
+
+#define EOF 0
+
+char *lib_gets(char *s)
+{
+    int ch;
+    char *p = s;
+
+    while ((ch = lib_getc()) != '\n' && ch != EOF)
+    {
+        if (ch == -1)
+        {
+            continue;
+        }
+        *s = (char)ch;
+        s++;
+    }
+
+    *s = '\0';
+    return p;
+}
+
+#define LSR_RX_READY (1 << 0)
+#define EOF 0
+
+int lib_getc()
+{
+    if (*UART_LSR & LSR_RX_READY)
+    {
+        return *UART_RHR == '\r' ? '\n' : *UART_RHR;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+void lib_isr()
+{
+    for (;;)
+    {
+        int c = lib_getc();
+        if (c == -1)
+        {
+            break;
+        }
+        else
+        {
+            lib_putc((char)c);
+            lib_putc('\n');
+        }
+    }
 }

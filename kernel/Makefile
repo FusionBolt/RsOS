@@ -8,7 +8,7 @@ OBJDUMP = riscv64-unknown-elf-objdump
 
 all: os.elf
 
-os.elf: boot.s os.cpp string.cpp sys.s timer.cpp libc.cpp proc.cpp trap.cpp mm.cpp
+os.elf: boot.s os.cpp string.cpp sys.s libc.cpp proc.cpp trap.cpp mm.cpp ../user/shell.cpp plic.cpp start.cpp
 	$(CC) $(CFLAGS) -T linker.ld -o os.elf $^
 	riscv64-unknown-elf-objdump -d os.elf > os.asm
 

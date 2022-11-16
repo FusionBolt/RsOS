@@ -28,3 +28,9 @@ inline void delay(volatile int count)
     count *= 50000;
     while(count--);
 }
+
+char *lib_gets(char *s);
+
+int lib_getc();
+
+void lib_isr();

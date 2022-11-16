@@ -42,6 +42,8 @@ struct free_page {
 
 void vminit();
 
+void vminithart();
+
 void kinit();
 
 void check_memory();
@@ -51,8 +53,7 @@ void check_memory();
 
 #define MAKE_SATP(pagetable) (SATP_SV39 | (((uint64_t)pagetable) >> 12))
 
-static inline void
-sfence_vma()
+static inline void sfence_vma()
 {
     // the zero, zero means flush all TLB entries.
     asm volatile("sfence.vma zero, zero");

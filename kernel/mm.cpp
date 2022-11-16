@@ -120,7 +120,7 @@ void mappage(page_table_t pt, uint64_t va, uint64_t pa, int size, int perm) {
 page_table_t kvmmake() {
 //    lib_printf("kvmmake\n");
     page_table_t pt = reinterpret_cast<page_table_t>(kalloc());
-    lib_printf("pt:%x\n", pt);
+//    lib_printf("pt:%x\n", pt);
     auto mem_start_addr = reinterpret_cast<uint64_t>(_heap_start);
 //    mappage(pt, CLINT, CLINT, PAGE_SIZE, PTE_W | PTE_R);
     mappage(pt, UART0, UART0, PAGE_SIZE, PTE_W | PTE_R);
@@ -137,7 +137,7 @@ void kinit()
     lib_printf("heap start:%x, end:%x, size:%d\n", _heap_start, PHYSTOP, PHYSTOP - reinterpret_cast<uint64_t>(_heap_start));
 }
 
-void set_page_table_reg() {
+void vminithart() {
     // wait for any previous writes to the page table memory to finish.
     sfence_vma();
 
@@ -150,7 +150,6 @@ void set_page_table_reg() {
 void vminit()
 {
     kernel_page_table = kvmmake();
-    set_page_table_reg();
 }
 
 void check_memory()
