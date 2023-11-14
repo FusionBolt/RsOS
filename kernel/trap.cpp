@@ -6,14 +6,29 @@
 
 extern "C" {
 void trap_vector();
+void kernelvec();
+
+void kerneltrap()
+{
+    lib_printf("kernel trap\n");
+    uint64_t sepc = r_sepc();
+    uint64_t sstatus = r_sstatus();
+    uint64_t scause = r_scause();
+
+    if((sstatus & SSTATUS_SPP) == 0) {
+        panic("kerneltrap: not from supervisor mode");
+    }
+    if(intr_get() != 0) {
+        panic("kerneltrap: interrupts enabled");
+    }
+
+    w_sepc(sepc);
+    w_sstatus(sstatus);
+}
 
 void trap_init()
 {
-    // set the machine-mode trap handler.
-    w_mtvec((reg_t)trap_vector);
-
-    // enable machine-mode interrupts.
-    w_mstatus(r_mstatus() | MSTATUS_MIE);
+    w_stvec(reinterpret_cast<reg_t>(kernelvec));
 }
 
 void preemptive(reg_t);

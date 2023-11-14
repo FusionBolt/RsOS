@@ -35,6 +35,19 @@ static inline reg_t r_mhartid()
     return x;
 }
 
+// Supervisor Interrupt Pending
+static inline uint64_t r_sip()
+{
+    uint64_t x;
+    asm volatile("csrr %0, sip" : "=r" (x) );
+    return x;
+}
+
+static inline void w_sip(uint64_t x)
+{
+    asm volatile("csrw sip, %0" : : "r" (x));
+}
+
 // Machine Status Register, mstatus
 #define MSTATUS_MPP_MASK (3 << 11) // previous mode.
 #define MSTATUS_MPP_M (3 << 11)
@@ -192,6 +205,21 @@ w_sie(uint64_t x)
     asm volatile("csrw sie, %0" : : "r" (x));
 }
 
+
+// supervisor exception program counter, holds the
+// instruction address to which a return from
+// exception will go.
+static inline void w_sepc(uint64_t x)
+{
+    asm volatile("csrw sepc, %0" : : "r" (x));
+}
+
+static inline uint64_t r_sepc()
+{
+    uint64_t x;
+    asm volatile("csrr %0, sepc" : "=r" (x) );
+    return x;
+}
 
 // Physical Memory Protection
 static inline void

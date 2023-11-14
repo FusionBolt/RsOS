@@ -15,8 +15,8 @@ extern "C" {
         kinit();
         lib_puts("vminit\n");
         vminit();
-        lib_puts("trap init");
-//        trap_init();
+        lib_puts("trap init\n");
+        trap_init();
         plic_init();
         lib_puts("init finish");
 //        plic_init();
