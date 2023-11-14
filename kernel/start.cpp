@@ -35,11 +35,18 @@ void timer_init() {
 }
 
 void start() {
-    // enable supervisor mode
-    auto status = r_mstatus();
-    w_mstatus(status | SSTATUS_SPP);
+    // set M Previous Privilege mode to Supervisor, for mret.
+    unsigned long x = r_mstatus();
+    x &= ~MSTATUS_MPP_MASK;
+    x |= MSTATUS_MPP_S;
+    w_mstatus(x);
 
-    timer_init();
+    w_satp(0);
+
+    // delegate all interrupts and exceptions to supervisor mode.
+    w_medeleg(0xffff);
+    w_mideleg(0xffff);
+    w_sie(r_sie() | SIE_SEIE | SIE_STIE | SIE_SSIE);
 
     // todo: what?? 如果不开这个会怎么样
     // configure Physical Memory Protection to give supervisor mode
@@ -47,7 +54,7 @@ void start() {
     w_pmpaddr0(0x3fffffffffffffull);
     w_pmpcfg0(0xf);
 
-    w_satp(0);
+    timer_init();
 
     w_mepc(reinterpret_cast<reg_t>(&os_main));
     lib_printf("end start\n");

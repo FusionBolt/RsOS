@@ -48,6 +48,8 @@ void kinit();
 
 void check_memory();
 
+void *kalloc();
+
 // use riscv's sv39 page table scheme.
 #define SATP_SV39 (8L << 60)
 

@@ -15,10 +15,10 @@ extern "C" {
         kinit();
         lib_puts("vminit\n");
         vminit();
-        while(1) {
-            delay(10000);
-            lib_printf("time: %d\n", *reinterpret_cast<uint64_t*>(CLINT_MTIME));
-        }
+        lib_puts("trap init");
+//        trap_init();
+        plic_init();
+        lib_puts("init finish");
 //        plic_init();
 //        init_first_proc();
 //        create_proc(&shell);
