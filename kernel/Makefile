@@ -14,7 +14,7 @@ all: os.elf hdd.dsk
 hdd.dsk:
 	dd if=/dev/urandom of=hdd.dsk bs=1M count=32
 
-os.elf: boot.s os.cpp string.cpp sys.s  libc.cpp proc.cpp trap.cpp mm.cpp virtio_disk.cpp ../user/shell.cpp plic.cpp start.cpp
+os.elf: boot.s os.cpp string.cpp sys.s  libc.cpp proc.cpp trap.cpp mm.cpp bio.cpp fs.cpp file.cpp virtio_disk.cpp ../user/shell.cpp plic.cpp start.cpp
 	$(CC) $(CFLAGS) -T linker.ld -o os.elf $^
 	riscv64-unknown-elf-objdump -d os.elf > os.asm
 

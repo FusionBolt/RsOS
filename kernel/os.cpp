@@ -8,6 +8,9 @@ extern "C" {
     void trap_init();
     void plic_init();
     void virtio_disk_init();
+    void binit();
+    void iinit();
+    void fileinit();
 
     int os_main()
     {
@@ -20,6 +23,9 @@ extern "C" {
         trap_init();
         plic_init();
         lib_puts("init finish");
+        binit();
+        iinit();
+        fileinit();
         virtio_disk_init();
         while (true)
         {
