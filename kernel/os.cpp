@@ -7,6 +7,7 @@
 extern "C" {
     void trap_init();
     void plic_init();
+    void virtio_disk_init();
 
     int os_main()
     {
@@ -19,6 +20,11 @@ extern "C" {
         trap_init();
         plic_init();
         lib_puts("init finish");
+        virtio_disk_init();
+        while (true)
+        {
+            lib_puts("s");
+        }
 //        plic_init();
 //        init_first_proc();
 //        create_proc(&shell);
