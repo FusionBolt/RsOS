@@ -9,10 +9,9 @@ struct file {
 struct f_table {
     spinlock lock;
     file files[NFILE];
-};
+} ftable;
 
 extern "C" void fileinit()
 {
-    f_table *ftable = (f_table*)kalloc();
-    initlock(&ftable->lock, "ftable");
+    initlock(&ftable.lock, "ftable");
 }

@@ -39,6 +39,8 @@ struct free_page {
 #define ROUND_DOWN(_a) _a
 #define ROUND_UP(_a) _a
 
+#define PGROUNDUP(sz)  (((sz)+PAGE_SIZE-1) & ~(PAGE_SIZE-1))
+#define PGROUNDDOWN(a) (((a)) & ~(PAGE_SIZE-1))
 
 void vminit();
 

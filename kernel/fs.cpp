@@ -10,13 +10,12 @@ struct inode {
 struct itable {
     spinlock lock;
     inode inodelist[NINODE];
-};
+} table;
 
 extern "C" void iinit()
 {
-    itable *table = (itable *)kalloc();
-    initlock(&table->lock, "itable");
+    initlock(&table.lock, "itable");
     for (int i = 0; i < NINODE; ++i) {
-        init_sleeplock(&table->inodelist[i].lock, "inode");
+        init_sleeplock(&table.inodelist[i].lock, "inode");
     }
 }

@@ -24,11 +24,10 @@ struct b_cache {
     // Sorted by how recently the buffer was used.
     // head.next is most recent, head.prev is least.
     struct buf head;
-};
+} bcache;
 
 extern "C" void binit()
 {
     struct buf *b;
-    b_cache *bcache = (b_cache*)kalloc();
-    initlock(&bcache->lock, "bcache");
+    initlock(&bcache.lock, "bcache");
 }

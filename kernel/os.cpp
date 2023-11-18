@@ -11,6 +11,8 @@ extern "C" {
     void binit();
     void iinit();
     void fileinit();
+    void shell_init();
+    void scheduler();
 
     int os_main()
     {
@@ -22,21 +24,14 @@ extern "C" {
         lib_puts("trap init\n");
         trap_init();
         plic_init();
-        lib_puts("init finish");
         binit();
         iinit();
         fileinit();
         virtio_disk_init();
-        while (true)
-        {
-            lib_puts("s");
-        }
-//        plic_init();
-//        init_first_proc();
-//        create_proc(&shell);
-//        create_proc(&user_first_proc);
-//        create_proc(&user_while_proc);
-//        create_proc(&user_last_proc);
+        lib_puts("init finish\n");
+        shell_init();
+        scheduler();
+
 //        show_proc();
 //        main_proc();
         return 0;

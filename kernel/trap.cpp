@@ -10,7 +10,7 @@ void kernelvec();
 
 void kerneltrap()
 {
-    lib_printf("kernel trap\n");
+//    lib_printf("kernel trap\n");
     uint64_t sepc = r_sepc();
     uint64_t sstatus = r_sstatus();
     uint64_t scause = r_scause();
@@ -144,21 +144,21 @@ reg_t trap_handler(reg_t epc, reg_t cause) {
     return ret_pc;
 }
 
-void preemptive(reg_t epc) {
-    lib_printf("epc:%x\n", epc);
-    // 除非提前保存pc
-    //在这里开始回去调度，那么一会回来的也是这里，无法再回到user proc了
-    delay(10000);
-    lib_printf("pid: %d ", current_proc()->pid);
-    //    current_proc()->time = timer_count;
-    //    timer_count = 0;
-    current_proc()->state = proc_sleeping;
-    lib_puts("preemptive!\n");
-
-    switch_to_sys_proc();
-    lib_puts("end preemtive\n");
-
-    //    lib_printf("2 status:%d\n", sys_proc()[2].state);
-    //    run_proc(sys_proc());
-}
+//void preemptive(reg_t epc) {
+//    lib_printf("epc:%x\n", epc);
+//    // 除非提前保存pc
+//    //在这里开始回去调度，那么一会回来的也是这里，无法再回到user proc了
+//    delay(10000);
+//    lib_printf("pid: %d ", current_proc()->pid);
+//    //    current_proc()->time = timer_count;
+//    //    timer_count = 0;
+//    current_proc()->state = proc_sleeping;
+//    lib_puts("preemptive!\n");
+//
+//    switch_to_sys_proc();
+//    lib_puts("end preemtive\n");
+//
+//    //    lib_printf("2 status:%d\n", sys_proc()[2].state);
+//    //    run_proc(sys_proc());
+//}
 }

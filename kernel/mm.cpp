@@ -28,9 +28,12 @@ void *kalloc() {
 }
 
 void free_range(void *pa_begin, void *pa_end) {
-//    lib_printf("begin: %x\n", pa_begin);
-//    lib_printf("end: %x\n", pa_end);
-    for (char *begin = reinterpret_cast<char *>(pa_begin); begin < pa_end; begin += PAGE_SIZE) {
+    lib_printf("begin: %x\n", pa_begin);
+    lib_printf("end: %x\n", pa_end);
+    // todo： 不round就会出错
+    lib_printf("round begin: %x\n", PGROUNDUP((uint64_t)pa_begin));
+    lib_printf("round end: %x\n", PGROUNDDOWN((uint64_t)pa_end));
+    for (char *begin = reinterpret_cast<char *>(PGROUNDUP((uint64_t)pa_begin)); begin < (char *)PGROUNDDOWN((uint64_t)pa_end); begin += PAGE_SIZE) {
 //        lib_printf("now: %x\n", begin);
         kfree(begin);
 //        lib_printf("free ok\n");
@@ -153,6 +156,16 @@ void vminit()
 }
 
 void check_memory()
+{
+
+}
+
+void uvmalloc()
+{
+
+}
+
+void uvmfree()
 {
 
 }
