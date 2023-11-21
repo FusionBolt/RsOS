@@ -11,11 +11,15 @@ extern "C" {
     void binit();
     void iinit();
     void fileinit();
-    void shell_init();
     void scheduler();
+    void first_user_proc_init();
 
     int os_main()
     {
+        if(cpuid() != 0)
+        {
+            return 0;
+        }
         lib_puts("os start\n");
         lib_puts("kinit\n");
         kinit();
@@ -29,7 +33,7 @@ extern "C" {
         fileinit();
         virtio_disk_init();
         lib_puts("init finish\n");
-        shell_init();
+        first_user_proc_init();
         scheduler();
 
 //        show_proc();

@@ -4,7 +4,8 @@
 
 cpu cpus[NCPU];
 proc procs[NPROC];
-
+uint8_t task_stack[NCPU][PROC_MAX_CNT][STACK_SIZE];
+proc *current_proc;
 cpu* get_cpu(int cpu_id)
 {
     return &cpus[cpu_id];
@@ -13,6 +14,18 @@ cpu* get_cpu(int cpu_id)
 cpu* get_current_cpu()
 {
     return get_cpu(cpuid());
+}
+
+proc *get_current_proc()
+{
+    return get_current_cpu()->curr_proc;
+}
+
+int pid = 0;
+int pic_alloc()
+{
+    pid++;
+    return pid;
 }
 
 extern "C" void scheduler()
@@ -29,11 +42,35 @@ extern "C" void scheduler()
     }
 }
 
-proc* alloc_proc()
+page_table_t proc_pagetable(proc *p)
+{
+    page_table_t pagetable;
+    pagetable = uvmcreate();
+    return pagetable;
+}
+
+proc* proc_alloc()
 {
     // 1. find first unused proc
     for (int i = 0; i < NPROC; ++i) {
         if(procs[i].state == proc_unused) {
+            // 2. update basic info
+            auto& proc = procs[i];
+            proc.state = proc_runnable;
+            proc.pid = pic_alloc();
+            // todo: return address应该跳到哪里
+            proc.ctxt.ra = 0;
+            proc.trapframe = (trapframe_t *)kalloc();
+            proc.pagetable = proc_pagetable(&proc);
+            // s2 = proc_addr
+            proc.ctxt.s2 = 0;
+            // todo: stack size default value
+            proc.ctxt.sp = proc.stack + STACK_SIZE;
+            // alloc stack
+            // todo: alloc和这样用预先分配的有什么区别？？
+            // todo: 如果是预先分配的静态区域，那么是不是就没有写保护了
+            // 或者说这块内存区域不在os的管理范围内？？
+//            proc.ctxt.sp = reinterpret_cast<uint64_t>(&task_stack[cpuid()][i]);
             return &procs[i];
         }
     }
@@ -41,14 +78,29 @@ proc* alloc_proc()
     panic("no empty proc");
 }
 
-// first user
-extern "C" void shell_init()
-{
-    auto p = alloc_proc();
+// a user program that calls exec("/init")
+// assembled from ../user/initcode.S
+// od -t xC ../user/initcode
+unsigned char initcode[] = {
+        0x17, 0x05, 0x00, 0x00, 0x13, 0x05, 0x45, 0x02,
+        0x97, 0x05, 0x00, 0x00, 0x93, 0x85, 0x35, 0x02,
+        0x93, 0x08, 0x70, 0x00, 0x73, 0x00, 0x00, 0x00,
+        0x93, 0x08, 0x20, 0x00, 0x73, 0x00, 0x00, 0x00,
+        0xef, 0xf0, 0x9f, 0xff, 0x2f, 0x69, 0x6e, 0x69,
+        0x74, 0x00, 0x00, 0x24, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00
+};
 
-    // 分配一个进程handle
-    // 分配内存
-    // 设置context，栈
+extern "C" void first_user_proc_init()
+{
+    auto p = proc_alloc();
+    // 分配了一块内存，映射到了虚拟地址0
+    uvmfirst(p->pagetable, initcode, sizeof(initcode));
+    p->memsize = PAGE_SIZE;
+    // 这个pc是这个进程的虚拟内存中的地址，从这个进程的开始
+    p->trapframe->epc = 0;
+    // todo: 这个sp的位置
+    p->trapframe->sp = PAGE_SIZE;
 }
 
 //uint8_t task_stack[PROC_MAX_CNT][STACK_SIZE];

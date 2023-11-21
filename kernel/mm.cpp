@@ -160,6 +160,32 @@ void check_memory()
 
 }
 
+// create an empty user page table.
+// returns 0 if out of memory.
+page_table_t uvmcreate()
+{
+    page_table_t table;
+    table = (page_table_t)kalloc();
+    memset(table, 0, PAGE_SIZE);
+    return table;
+}
+
+void uvmfirst(page_table_t pagetable, unsigned char *src, uint64_t size)
+{
+    if(size >= PAGE_SIZE) {
+        panic("uvm first: need more than a page");
+    }
+
+    // todo: kalloc分配了一个页的大小，是物理地址吗？？
+    auto mem = kalloc();
+    memset(mem, 0, size);
+    mappage(pagetable, 0, reinterpret_cast<uint64_t>(mem), PAGE_SIZE, PTE_R | PTE_W | PTE_X | PTE_U);
+    // memcpy假设不能有overlap
+    // memmove没有这个假设
+    // todo: 这里会有overlap？
+    memmove(mem, src, size);
+}
+
 void uvmalloc()
 {
 

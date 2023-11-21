@@ -52,6 +52,10 @@ void check_memory();
 
 void *kalloc();
 
+page_table_t uvmcreate();
+
+void uvmfirst(page_table_t pagetable, unsigned char *src, uint64_t size);
+
 // use riscv's sv39 page table scheme.
 #define SATP_SV39 (8L << 60)
 
